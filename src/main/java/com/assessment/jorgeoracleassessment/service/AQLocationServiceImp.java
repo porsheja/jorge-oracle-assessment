@@ -31,8 +31,8 @@ public class AQLocationServiceImp implements AQLocationService {
      * the response is proccessed to filter the registries with the same
      * air quality parameter and converts it to a new data structure.
      * 
-     * @param countryCode 
-     * @param parameter
+     * @param parameter Air quality parameter
+     * @param countryCode ISO 3166-1 country code.
      * @return OutputResponse The desired output for the frontend.
      */
     @Override

@@ -42,7 +42,7 @@ public class OpenAQClientImpl implements OpenAQClient {
                     .buildAndExpand(parameter, countryCode)
                     .toUriString();
         } else {
-            url = uriBuilder.query("parameter={parameter}&latitude={latitude}&longitude={longitude}&radius={radius}")
+            url = uriBuilder.query("parameter={parameter}&coordinates={latitude},{longitude}&radius={radius}")
                     .buildAndExpand(parameter, latitude, longitude, radius)
                     .toUriString();
         }
