@@ -45,6 +45,8 @@ public class AQLocationServiceImp implements AQLocationService {
             throw new ValidationException("Invalid air quality parameter");
         }
 
+        double maxValue = Double.MIN_VALUE;
+
         // Calling REST API client to get the results.
         InputResponse response = client.getLocations(parameter, countryCode, null, null, -1);
 
@@ -58,8 +60,11 @@ public class AQLocationServiceImp implements AQLocationService {
                 // However, that doesn't happen. So we must filter by
                 // ourselves.
                 if (measure.parameter().equals(parameter)) {
+                    double lastValue = measure.lastValue();
+                    maxValue = Math.max(lastValue, maxValue);
+
                     rows.add(new OutputRow(location.coordinates().latitude(), location.coordinates().longitude(),
-                            measure.lastValue()));
+                            lastValue));
 
                     break;
                 }
@@ -76,7 +81,7 @@ public class AQLocationServiceImp implements AQLocationService {
                 .orElse(null);
         String displayParameter = paramDetail == null ? "" : paramDetail.displayName();
 
-        return new OutputResponse(0, Double.MAX_VALUE, parameter, displayParameter, rows);
+        return new OutputResponse(0, maxValue, parameter, displayParameter, rows);
     }
 
     /**
@@ -99,6 +104,8 @@ public class AQLocationServiceImp implements AQLocationService {
             throw new ValidationException("Invalid air quality parameter");
         }
 
+        double maxValue = Double.MIN_VALUE;
+
         // Calling REST API client to get the results.
         InputResponse response = client.getLocations(parameter, null, latitude, longitude, radius);
 
@@ -112,8 +119,11 @@ public class AQLocationServiceImp implements AQLocationService {
                 // However, that doesn't happen. So we must filter by
                 // ourselves.
                 if (measure.parameter().equals(parameter)) {
+                    double lastValue = measure.lastValue();
+                    maxValue = Math.max(lastValue, maxValue);
+
                     rows.add(new OutputRow(location.coordinates().latitude(), location.coordinates().longitude(),
-                            measure.lastValue()));
+                            lastValue));
 
                     break;
                 }
@@ -130,7 +140,7 @@ public class AQLocationServiceImp implements AQLocationService {
                 .orElse(null);
         String displayParameter = paramDetail == null ? "" : paramDetail.displayName();
 
-        return new OutputResponse(0, Double.MAX_VALUE, parameter, displayParameter, rows);
+        return new OutputResponse(0, maxValue, parameter, displayParameter, rows);
     }
 
     /**

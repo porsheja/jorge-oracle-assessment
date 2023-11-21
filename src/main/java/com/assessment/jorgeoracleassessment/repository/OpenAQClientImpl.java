@@ -1,6 +1,8 @@
 package com.assessment.jorgeoracleassessment.repository;
 
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -31,6 +33,7 @@ public class OpenAQClientImpl implements OpenAQClient {
      *         with the fields we require only.
      */
     @Override
+    @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 500))
     public InputResponse getLocations(String parameter, String countryCode, String latitude, String longitude,
             int radius) {
         String url = null;
@@ -62,6 +65,7 @@ public class OpenAQClientImpl implements OpenAQClient {
      * @return List of parameters.
      */
     @Override
+    @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 500))
     @Cacheable
     public InputParameters getParametersList() {
         String url = UriComponentsBuilder.newInstance()
