@@ -1,5 +1,6 @@
 package com.assessment.jorgeoracleassessment.repository;
 
+import com.assessment.jorgeoracleassessment.models.input.InputParameters;
 import com.assessment.jorgeoracleassessment.models.input.InputResponse;
 
 /**
@@ -19,4 +20,9 @@ public interface OpenAQClient {
      * with the fields we require only.
      */
     public InputResponse getLocations(String parameter, String countryCode, String latitude, String longitude, int radius);
+
+    /**
+     * @return List of parameters.
+     */
+    public InputParameters getParametersList();
 }

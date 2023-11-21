@@ -1,9 +1,11 @@
 package com.assessment.jorgeoracleassessment.repository;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.assessment.jorgeoracleassessment.models.input.InputParameters;
 import com.assessment.jorgeoracleassessment.models.input.InputResponse;
 
 /**
@@ -20,13 +22,13 @@ public class OpenAQClientImpl implements OpenAQClient {
      * and a radius.
      * 
      * @see https://docs.openaq.org/reference/locations_get_v2_locations_get
-     * @param parameter Air quality parameter
+     * @param parameter   Air quality parameter
      * @param countryCode ISO 3166-1 country code.
-     * @param latitude decimal-degree latitude.
-     * @param longitude decimal-degree longitude.
-     * @param radius Radius of the previously setted coordinates in meters.
+     * @param latitude    decimal-degree latitude.
+     * @param longitude   decimal-degree longitude.
+     * @param radius      Radius of the previously setted coordinates in meters.
      * @return InputResponse which is a representantion of the API response
-     * with the fields we require only.
+     *         with the fields we require only.
      */
     @Override
     public InputResponse getLocations(String parameter, String countryCode, String latitude, String longitude,
@@ -48,7 +50,28 @@ public class OpenAQClientImpl implements OpenAQClient {
         }
 
         RestTemplate restTemplate = new RestTemplate();
-        
+
         return restTemplate.getForObject(url, InputResponse.class);
+    }
+
+    /**
+     * Method that retrieves all the available air quality parameters and
+     * its details. This list is cached.
+     * 
+     * @see https://docs.openaq.org/reference/parameters_get_v2_parameters_get
+     * @return List of parameters.
+     */
+    @Override
+    @Cacheable
+    public InputParameters getParametersList() {
+        String url = UriComponentsBuilder.newInstance()
+                .scheme("https")
+                .host("api.openaq.org")
+                .path("/v2/parameters")
+                .build().toUriString();
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        return restTemplate.getForObject(url, InputParameters.class);
     }
 }

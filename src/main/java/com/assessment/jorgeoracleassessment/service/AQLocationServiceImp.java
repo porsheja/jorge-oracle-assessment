@@ -8,13 +8,15 @@ import org.springframework.stereotype.Service;
 
 import com.assessment.jorgeoracleassessment.models.input.InputLocation;
 import com.assessment.jorgeoracleassessment.models.input.InputMeasure;
+import com.assessment.jorgeoracleassessment.models.input.InputParameter;
 import com.assessment.jorgeoracleassessment.models.input.InputResponse;
 import com.assessment.jorgeoracleassessment.models.output.OutputResponse;
 import com.assessment.jorgeoracleassessment.models.output.OutputRow;
 import com.assessment.jorgeoracleassessment.repository.OpenAQClient;
 
 /**
- * Service which calls the src/main/java/com/assessment/jorgeoracleassessment/repository/OpenAQClient.java
+ * Service which calls the
+ * src/main/java/com/assessment/jorgeoracleassessment/repository/OpenAQClient.java
  * REST API Client with the parameters given and processes the results to
  * generate a new data structure to be used by the frontend.
  * 
@@ -27,11 +29,11 @@ public class AQLocationServiceImp implements AQLocationService {
 
     /**
      * Method that calls the REST API client to get a list of locations and
-     * parameters by the country code and the air quality parameter. Then, 
+     * parameters by the country code and the air quality parameter. Then,
      * the response is proccessed to filter the registries with the same
      * air quality parameter and converts it to a new data structure.
      * 
-     * @param parameter Air quality parameter
+     * @param parameter   Air quality parameter
      * @param countryCode ISO 3166-1 country code.
      * @return OutputResponse The desired output for the frontend.
      */
@@ -45,7 +47,7 @@ public class AQLocationServiceImp implements AQLocationService {
         // value for the selected air quality parameter.
         for (InputLocation location : response.results()) {
             for (InputMeasure measure : location.parameters()) {
-                // In theory, by passing the air quality parameter, OpenAQ 
+                // In theory, by passing the air quality parameter, OpenAQ
                 // should give us only one parameter for each location.
                 // However, that doesn't happen. So we must filter by
                 // ourselves.
@@ -55,12 +57,18 @@ public class AQLocationServiceImp implements AQLocationService {
 
                     break;
                 }
-            }            
+            }
         }
 
         // Calling REST API client to get the display represetation of the
         // parameter.
-        String displayParameter = "to do";
+        InputParameter paramDetail = client.getParametersList()
+                .results()
+                .stream()
+                .filter(item -> parameter.equals(item.name()))
+                .findFirst()
+                .orElse(null);
+        String displayParameter = paramDetail == null ? "" : paramDetail.displayName();
 
         return new OutputResponse(0, Double.MAX_VALUE, parameter, displayParameter, rows);
     }
@@ -69,13 +77,13 @@ public class AQLocationServiceImp implements AQLocationService {
      * Method that calls the REST API client to get a list of locations and
      * parameters by given latitude and longitude and a radius from that
      * coordinate. Then, the response is proccessed to filter the registries
-     * with the same air  quality parameter and converts it to a new data 
+     * with the same air quality parameter and converts it to a new data
      * structure.
      * 
      * @param parameter Air quality parameter
-     * @param latitude decimal-degree latitude.
+     * @param latitude  decimal-degree latitude.
      * @param longitude decimal-degree longitude.
-     * @param radius Radius of the previously setted coordinates in meters.
+     * @param radius    Radius of the previously setted coordinates in meters.
      * @return OutputResponse The desired output for the frontend.
      */
     @Override
@@ -89,7 +97,7 @@ public class AQLocationServiceImp implements AQLocationService {
         // value for the selected air quality parameter.
         for (InputLocation location : response.results()) {
             for (InputMeasure measure : location.parameters()) {
-                // In theory, by passing the air quality parameter, OpenAQ 
+                // In theory, by passing the air quality parameter, OpenAQ
                 // should give us only one parameter for each location.
                 // However, that doesn't happen. So we must filter by
                 // ourselves.
@@ -99,12 +107,18 @@ public class AQLocationServiceImp implements AQLocationService {
 
                     break;
                 }
-            }            
+            }
         }
 
         // Calling REST API client to get the display represetation of the
         // parameter.
-        String displayParameter = "to do";
+        InputParameter paramDetail = client.getParametersList()
+                .results()
+                .stream()
+                .filter(item -> parameter.equals(item.name()))
+                .findFirst()
+                .orElse(null);
+        String displayParameter = paramDetail == null ? "" : paramDetail.displayName();
 
         return new OutputResponse(0, Double.MAX_VALUE, parameter, displayParameter, rows);
     }

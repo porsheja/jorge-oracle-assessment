@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import com.assessment.jorgeoracleassessment.models.input.InputParameters;
 import com.assessment.jorgeoracleassessment.models.input.InputResponse;
 import com.assessment.jorgeoracleassessment.repository.OpenAQClient;
 import com.assessment.jorgeoracleassessment.repository.OpenAQClientImpl;
@@ -28,8 +29,8 @@ public class OpenAQClientTest {
     private OpenAQClient client;
 
     /**
-     * Test that if we set the air quality and country code then the getLocations
-     * method of our client, then we get a response.
+     * Test that if we set the air quality and country code to the getLocations 
+     * method of the REST API client, then we get a response.
      */
     @Test
     public void givenCountryAndAirQualityParameter_whenGettingTheMeasurements_thenRetrieveAResponse() {
@@ -50,8 +51,9 @@ public class OpenAQClientTest {
     }
     
     /**
-     * Test that if we set the air quality, a latitude, a longitude and a radius,
-     * then the getLocations method of our client, then we get a response.
+     * Test that if we set the air quality, a latitude, a longitude and a 
+     * radius to the getLocations method of the REST API client, then we get
+     * a response.
      */
     @Test
     public void givenLatitudeLongitudeRadiusAndAirQualityParameter_whenGettingTheMeasurements_thenRetrieveAnAppropiateResponse() {
@@ -69,5 +71,21 @@ public class OpenAQClientTest {
         assertEquals(response.results().get(0).parameters().size(), 1);*/
         // and that result parameter should be equal to test_parameter.
         /*assertEquals(response.results().get(0).parameters().get(0).parameter(), test_parameter);*/
+    }
+
+    /**
+     * Test that if we set the air quality and country code to the getDisplayName 
+     * method of the REST API client, then we get the display name.
+     */
+    @Test
+    public void givenAirQualityParameter_whenGettingDisplayName_thenRetrieveAString() {
+        String test_parameter = "pm25";
+
+        InputParameters response = client.getParametersList();
+
+        // Test that the response is not null.
+        assertNotNull(response);
+        // Test that the list contains test_parameter parameter.
+        assertTrue(response.results().stream().anyMatch(item -> test_parameter.equals(item.name())));
     }
 }
