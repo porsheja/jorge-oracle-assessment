@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -13,7 +14,6 @@ import com.assessment.jorgeoracleassessment.models.input.InputParameters;
 import com.assessment.jorgeoracleassessment.models.input.InputResponse;
 import com.assessment.jorgeoracleassessment.repository.OpenAQClient;
 import com.assessment.jorgeoracleassessment.repository.OpenAQClientImpl;
-import com.assessment.jorgeoracleassessment.service.SpringBootTest;
 
 /**
  * Integration tests for the src/main/java/com/assessment/jorgeoracleassessment/repository/OpenAQClientImpl.java

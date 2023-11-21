@@ -14,6 +14,8 @@ import com.assessment.jorgeoracleassessment.models.output.OutputResponse;
 import com.assessment.jorgeoracleassessment.models.output.OutputRow;
 import com.assessment.jorgeoracleassessment.repository.OpenAQClient;
 
+import jakarta.validation.ValidationException;
+
 /**
  * Service which calls the
  * src/main/java/com/assessment/jorgeoracleassessment/repository/OpenAQClient.java
@@ -39,6 +41,10 @@ public class AQLocationServiceImp implements AQLocationService {
      */
     @Override
     public OutputResponse getMeasurementsByCountry(String parameter, String countryCode) {
+        if (!isValidParameter(parameter)) {
+            throw new ValidationException("Invalid air quality parameter");
+        }
+
         // Calling REST API client to get the results.
         InputResponse response = client.getLocations(parameter, countryCode, null, null, -1);
 
@@ -89,6 +95,10 @@ public class AQLocationServiceImp implements AQLocationService {
     @Override
     public OutputResponse getMeasurementsByCoordinatesAndRadius(String parameter, String latitude, String longitude,
             int radius) {
+        if (!isValidParameter(parameter)) {
+            throw new ValidationException("Invalid air quality parameter");
+        }
+
         // Calling REST API client to get the results.
         InputResponse response = client.getLocations(parameter, null, latitude, longitude, radius);
 
@@ -121,5 +131,18 @@ public class AQLocationServiceImp implements AQLocationService {
         String displayParameter = paramDetail == null ? "" : paramDetail.displayName();
 
         return new OutputResponse(0, Double.MAX_VALUE, parameter, displayParameter, rows);
+    }
+
+    /**
+     * Method that validates if the air quality parameter is valid or not.
+     * 
+     * @param parameter Air quality parameter
+     * @return Flag which indicates if the air quality parameter is valid or not.
+     */
+    private boolean isValidParameter(String parameter) {
+        return client.getParametersList()
+                .results()
+                .stream()
+                .anyMatch(item -> parameter.equals(item.name()));
     }
 }
