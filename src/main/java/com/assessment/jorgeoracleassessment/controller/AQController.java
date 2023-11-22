@@ -50,8 +50,8 @@ public class AQController {
             "countryCode" }, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public OutputResponse getMeasurementsByAQParameterAndCountryCode(
-            @RequestParam("parameter") @NotBlank String parameter,
-            @RequestParam("countryCode") String countryCode) {
+            @RequestParam("parameter") @NotBlank(message = "Parameter must not be empty") String parameter,
+            @RequestParam("countryCode") @NotBlank(message = "Country code must not be empty") @Pattern(message = "Country code format is invalid", regexp = "^([a-zA-Z]{2})$") String countryCode) {
         return service.getMeasurementsByCountry(parameter, countryCode);
     }
 
@@ -72,7 +72,7 @@ public class AQController {
             "radius" }, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public OutputResponse getMeasurementsByAQParameterCoordinatesAndRadius(
-            @RequestParam("parameter") @NotBlank String parameter,
+            @RequestParam("parameter") @NotBlank(message = "Parameter must not be empty") String parameter,
             @RequestParam("latitude") @NotBlank(message = "latitude must not be empty") @Pattern(message = "latitude format is invalid", regexp = "^-?\\d{1,2}\\.?\\d{0,8}") String latitude,
             @RequestParam("longitude") @NotBlank(message = "longitude must not be empty") @Pattern(message = "longitude format is invalid", regexp = "^-?1?\\d{1,2}\\.?\\d{0,8}") String longitude,
             @RequestParam("radius") @Min(value = 1, message = "radius must be bigger than 0") @Max(value = 25000, message = "radius must be smaller or equal than 2500") int radius) {
