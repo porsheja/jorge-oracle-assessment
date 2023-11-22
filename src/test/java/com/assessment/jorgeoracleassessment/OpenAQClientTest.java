@@ -1,7 +1,11 @@
 package com.assessment.jorgeoracleassessment;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.security.InvalidParameterException;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,7 +40,7 @@ public class OpenAQClientTest {
     public void givenCountryAndAirQualityParameter_whenGettingTheMeasurements_thenRetrieveAResponse() {
         String test_parameter = "pm25";
 
-        InputResponse response = client.getLocations(test_parameter, "MX", null, null, -1);
+        InputResponse response = client.getLocations(test_parameter, "MX", null, null, -1, 1);
 
         assertNotNull(response);
         assertTrue(response.meta().found() >= 1);
@@ -59,7 +63,7 @@ public class OpenAQClientTest {
     public void givenLatitudeLongitudeRadiusAndAirQualityParameter_whenGettingTheMeasurements_thenRetrieveAnAppropiateResponse() {
         String test_parameter = "pm25";
 
-        InputResponse response = client.getLocations(test_parameter, null, "31.68668689", "-106.42717484", 10000);
+        InputResponse response = client.getLocations(test_parameter, null, "31.68668689", "-106.42717484", 10000, 1);
 
         assertNotNull(response);
         assertTrue(response.meta().found() >= 1);
@@ -87,5 +91,18 @@ public class OpenAQClientTest {
         assertNotNull(response);
         // Test that the list contains test_parameter parameter.
         assertTrue(response.results().stream().anyMatch(item -> test_parameter.equals(item.name())));
+    }
+
+    /**
+	 * Test when we don't set any required parameters to the getLocations method, 
+     * then we get an exception.
+     */
+    @Test
+    public void givenNoParameters_whenGettingMeasures_thenThrowAnException() {        
+		// Expect exception when calling the method getLocations
+		// since there are no required parameters set.
+		InvalidParameterException exception = assertThrows(InvalidParameterException.class,
+				() -> client.getLocations(null, null, null, null, -1, -1));
+		assertEquals("Invalid parameters supplied", exception.getMessage());        
     }
 }

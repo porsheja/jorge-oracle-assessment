@@ -9,6 +9,7 @@ import static org.mockito.ArgumentMatchers.nullable;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -70,12 +71,12 @@ public class AQLocationServiceUnitTest {
 				new InputMeta(1, 100, 1),
 				List.of(new InputLocation(inputMeasures, new InputCoordinates("109", "-31"))));
 
-		// Mock of the call to the REST API Client method getLocations.
+		// Mock of the call to the REST API Client method getParametersList.
 		Mockito.when(openAQClient.getParametersList())
 				.thenReturn(mockedParameterList);
 		// Mock of the call to the REST API Client method getLocations.
 		Mockito.when(openAQClient.getLocations(anyString(), anyString(), nullable(String.class),
-				nullable(String.class), anyInt()))
+				nullable(String.class), anyInt(), anyInt()))
 				.thenReturn(mockedResponse);
 
 		OutputResponse response = service.getMeasurementsByCountry(test_parameter, test_countryCode);
@@ -112,7 +113,75 @@ public class AQLocationServiceUnitTest {
 	}
 
 	/**
-	 * Test when we set an inalid air quality parameter and country code to the
+	 * Test when we set the air quality parameter and country code to the
+	 * AQLocationService's getMeasurementsByCountry method in multiple pages, 
+	 * then retrieve each page and concat them to get avalid OutputResponse 
+	 * structure.
+	 */
+	@Test
+	public void givenCountryAndAirQualityParameter_whenGettingTheMeasurementsInMultiplePages_thenRetrieveAnAppropiateResponse() {
+		String test_parameter = "pm25",
+				test_parameter_description = test_parameter + " display name",
+				test_countryCode = "mx";
+
+		// Mocked parameter list.
+		InputParameters mockedParameterList = new InputParameters(List.of(
+				new InputParameter(test_parameter, test_parameter_description, "desc", "unit")));
+		// Mocked response of the REST API Client (page 1).
+		List<InputMeasure> inputMeasures1 = List.of(new InputMeasure(Math.random() * 100, test_parameter));
+		InputResponse mockedResponse1 = new InputResponse(
+				new InputMeta(1, 1, 2),
+				List.of(new InputLocation(inputMeasures1, new InputCoordinates("109", "-31"))));
+		// Mocked response of the REST API Client (page 2).
+		List<InputMeasure> inputMeasures2 = List.of(new InputMeasure(Math.random() * 100, test_parameter));
+		InputResponse mockedResponse2 = new InputResponse(
+				new InputMeta(2, 1, 2),
+				List.of(new InputLocation(inputMeasures2, new InputCoordinates("109", "-31"))));
+
+		// Mock of the call to the REST API Client method getParametersList.
+		Mockito.when(openAQClient.getParametersList())
+				.thenReturn(mockedParameterList);
+		// Mock of the first and second call to the REST API Client method getLocations.
+		Mockito.when(openAQClient.getLocations(anyString(), anyString(), nullable(String.class),
+				nullable(String.class), anyInt(), anyInt()))
+				.thenReturn(mockedResponse1, mockedResponse2);
+
+		OutputResponse response = service.getMeasurementsByCountry(test_parameter, test_countryCode);
+
+		// Assert that the response is not null.
+		assertNotNull(response);
+		// Asser that the parameter and the display name is equal to
+		// the ones in the mockedParameterList.
+		assertEquals(response.parameter(), mockedParameterList.results()
+				.get(0).name());
+		assertEquals(response.displayName(), mockedParameterList.results()
+				.get(0).displayName());
+		// Assert that the max vaule is equal to the biggest value of the
+		// mockedParameterList.
+		assertEquals(response.max(), Stream.concat(inputMeasures1.stream(), inputMeasures2.stream())
+				.max(Comparator.comparing(InputMeasure::lastValue))
+				.get().lastValue());
+		// Assert thet our response data set size is equal to the counting
+		// of locations that both mocked responses has.
+		assertEquals(response.dataSet().size(), 
+			mockedResponse1.results().size() + mockedResponse2.results().size());
+		// Assert thet the latitude of the first output response row is equal
+		// to the latitude of the first location the first mocked response has.
+		assertEquals(response.dataSet().get(0).latitude(),
+				mockedResponse1.results().get(0).coordinates().latitude());
+		// Assert thet the longitude of the second output response row is equal
+		// to the longitude of the second location the second mocked response has.
+		assertEquals(response.dataSet().get(1).longitude(),
+				mockedResponse2.results().get(0).coordinates().longitude());
+		// Assert thet the value of the second output response row is equal to
+		// the latest value of the first parameter of the first location the
+		// second mocked response has.
+		assertEquals(response.dataSet().get(1).value(),
+				mockedResponse2.results().get(0).parameters().get(0).lastValue());
+	}
+
+	/**
+	 * Test when we set an invalid air quality parameter and country code to the
 	 * AQLocationService's getMeasurementsByCountry method, then we get an
 	 * exception.
 	 */
@@ -159,11 +228,11 @@ public class AQLocationServiceUnitTest {
 				new InputMeta(1, 100, 1),
 				List.of(new InputLocation(inputMeasures, new InputCoordinates("109", "-31"))));
 
-		// Mock of the call to the REST API Client method getLocations.
+		// Mock of the call to the REST API Client method getParametersList.
 		Mockito.when(openAQClient.getParametersList())
 				.thenReturn(mockedParameterList);
-		// Mock of the call to the REST API Client.
-		Mockito.when(openAQClient.getLocations(anyString(), nullable(String.class), anyString(), anyString(), anyInt()))
+		// Mock of the call to the REST API Client method getLocations.
+		Mockito.when(openAQClient.getLocations(anyString(), nullable(String.class), anyString(), anyString(), anyInt(), anyInt()))
 				.thenReturn(mockedResponse);
 
 		OutputResponse response = service.getMeasurementsByCoordinatesAndRadius(test_parameter, test_latitude,
