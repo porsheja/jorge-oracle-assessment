@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test page</title>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function (event) {
+            document.querySelector("#option1").addEventListener("click", function () {
+                document.getElementById("form1").style.display = "block";
+                document.getElementById("form2").style.display = "none";
+            });
+            document.querySelector("#option2").addEventListener("click", function () {
+                document.getElementById("form2").style.display = "block";
+                document.getElementById("form1").style.display = "none";
+            });
+        });
+    </script>
+
+    <style>
+        #form1,
+        #form2 {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>    
+    <input type="radio" id="option1" name="selector" /> 
+    <label for="option1">Option 1: Country Code and air quality parameters</label> <br />
+    <input type="radio" id="option2" name="selector" /> 
+    <label for="option1">Option 2: Coordinates, radius and air quality parameters</label> <br />
+    <hr />
+
+    <form action="/measurements" method="get" id="form1">
+        <label for="countryCode">Country code</label>
+        <input type="text" name="countryCode" id="countryCode" /> <br />
+        <label for="parameter">Air quality parameter</label>
+        <select name="parameter" id="parameter">
+            <option value="pm10">pm10</option>
+            <option value="pm25">pm25</option>
+            <option value="o3">o3</option>
+            <option value="co">co</option>
+            <option value="no2">no2</option>
+            <option value="so2">so2</option>
+            <option value="no2">no2</option>
+            <option value="co">co</option>
+            <option value="so2">so2</option>
+            <option value="o3">o3</option>
+            <option value="bc">bc</option>
+            <option value="co2">co2</option>
+            <option value="no2">no2</option>
+            <option value="bc">bc</option>
+            <option value="pm1">pm1</option>
+            <option value="co2">co2</option>
+            <option value="wind_direction">wind_direction</option>
+            <option value="nox">nox</option>
+            <option value="no">no</option>
+            <option value="rh">rh</option>
+            <option value="nox">nox</option>
+            <option value="ch4">ch4</option>
+            <option value="pn">pn</option>
+            <option value="o3">o3</option>
+            <option value="ufp">ufp</option>
+            <option value="wind_speed">wind_speed</option>
+            <option value="no">no</option>
+            <option value="pm">pm</option>
+            <option value="ambient_temp">ambient_temp</option>
+            <option value="pressure">pressure</option>
+            <option value="pm25-old">pm25-old</option>
+            <option value="relativehumidity">relativehumidity</option>
+            <option value="temperature">temperature</option>
+            <option value="so2">so2</option>
+            <option value="co">co</option>
+            <option value="um003">um003</option>
+            <option value="um010">um010</option>
+            <option value="temperature">temperature</option>
+            <option value="um050">um050</option>
+            <option value="um025">um025</option>
+            <option value="pm100">pm100</option>
+            <option value="pressure">pressure</option>
+            <option value="um005">um005</option>
+            <option value="humidity">humidity</option>
+            <option value="um100">um100</option>
+            <option value="voc">voc</option>
+            <option value="ozone">ozone</option>
+            <option value="nox">nox</option>
+            <option value="bc">bc</option>
+            <option value="no">no</option>
+            <option value="pm4">pm4</option>
+            <option value="so4">so4</option>
+            <option value="ec">ec</option>
+            <option value="oc">oc</option>
+            <option value="cl">cl</option>
+            <option value="k">k</option>
+            <option value="no3">no3</option>
+            <option value="pb">pb</option>
+            <option value="as">as</option>
+            <option value="ca">ca</option>
+            <option value="fe">fe</option>
+            <option value="ni">ni</option>
+            <option value="v">v</option>
+            <option value="pm25">pm25</option>
+        </select> <br /> <br />
+
+        <input type="submit" />
+    </form>
+
+    <form action="/measurements" method="get" id="form2">
+        <label for="latitude">Latitude</label>
+        <input type="number" min="-180" max="180" step="0.00000001" name="latitude" id="latitude" /> <br />
+        <label for="longitude">Longitude</label>
+        <input type="number" min="-180" max="180" step="0.00000001" name="longitude" id="longitude" /> <br />
+        <label for="radius">Radius</label>
+        <input type="number" min="0" max="25000" step="0.00000001" name="radius" id="radius" /> <br />
+        <label for="parameter">Air quality parameter</label>
+        <select name="parameter" id="parameter">
+            <option value="pm10">pm10</option>
+            <option value="pm25">pm25</option>
+            <option value="o3">o3</option>
+            <option value="co">co</option>
+            <option value="no2">no2</option>
+            <option value="so2">so2</option>
+            <option value="no2">no2</option>
+            <option value="co">co</option>
+            <option value="so2">so2</option>
+            <option value="o3">o3</option>
+            <option value="bc">bc</option>
+            <option value="co2">co2</option>
+            <option value="no2">no2</option>
+            <option value="bc">bc</option>
+            <option value="pm1">pm1</option>
+            <option value="co2">co2</option>
+            <option value="wind_direction">wind_direction</option>
+            <option value="nox">nox</option>
+            <option value="no">no</option>
+            <option value="rh">rh</option>
+            <option value="nox">nox</option>
+            <option value="ch4">ch4</option>
+            <option value="pn">pn</option>
+            <option value="o3">o3</option>
+            <option value="ufp">ufp</option>
+            <option value="wind_speed">wind_speed</option>
+            <option value="no">no</option>
+            <option value="pm">pm</option>
+            <option value="ambient_temp">ambient_temp</option>
+            <option value="pressure">pressure</option>
+            <option value="pm25-old">pm25-old</option>
+            <option value="relativehumidity">relativehumidity</option>
+            <option value="temperature">temperature</option>
+            <option value="so2">so2</option>
+            <option value="co">co</option>
+            <option value="um003">um003</option>
+            <option value="um010">um010</option>
+            <option value="temperature">temperature</option>
+            <option value="um050">um050</option>
+            <option value="um025">um025</option>
+            <option value="pm100">pm100</option>
+            <option value="pressure">pressure</option>
+            <option value="um005">um005</option>
+            <option value="humidity">humidity</option>
+            <option value="um100">um100</option>
+            <option value="voc">voc</option>
+            <option value="ozone">ozone</option>
+            <option value="nox">nox</option>
+            <option value="bc">bc</option>
+            <option value="no">no</option>
+            <option value="pm4">pm4</option>
+            <option value="so4">so4</option>
+            <option value="ec">ec</option>
+            <option value="oc">oc</option>
+            <option value="cl">cl</option>
+            <option value="k">k</option>
+            <option value="no3">no3</option>
+            <option value="pb">pb</option>
+            <option value="as">as</option>
+            <option value="ca">ca</option>
+            <option value="fe">fe</option>
+            <option value="ni">ni</option>
+            <option value="v">v</option>
+            <option value="pm25">pm25</option>
+        </select> <br /> <br />
+
+        <input type="submit" />
+    </form>
+</body>
+
+</html>

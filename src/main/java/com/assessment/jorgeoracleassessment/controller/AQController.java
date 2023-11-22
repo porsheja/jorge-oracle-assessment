@@ -25,7 +25,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
 /**
- * Controller.
+ * Controller for our component.
  * 
  * @author Jorge Gonzalez
  */
